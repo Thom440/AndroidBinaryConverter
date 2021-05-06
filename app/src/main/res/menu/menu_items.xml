@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuDecimal"
+        android:title="@string/decimal"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuBinary"
+        android:title="@string/binary"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuOctal"
+        android:title="@string/octal"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuHex"
+        android:title="@string/hex"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuString"
+        android:title="@string/letterActivity"
+        app:showAsAction="never" />
+</menu>

@@ -6,8 +6,13 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class ConvertString extends AppCompatActivity {
 
@@ -20,6 +25,32 @@ public class ConvertString extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
         getSupportActionBar().setTitle("String");
+
+        TextView decimalText = (TextView)findViewById(R.id.decimalTextView5);
+
+        EditText edit = (EditText)findViewById(R.id.convertString);
+        edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String decimalResult = "";
+                for (int i = 0; i < edit.getText().length(); i++) {
+                    char letter = edit.getText().charAt(i);
+                    int number = letter;
+                    decimalResult += number + " ";
+                }
+                decimalText.setText(decimalResult);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override

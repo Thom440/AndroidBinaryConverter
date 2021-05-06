@@ -101,21 +101,26 @@ public class Decimal extends AppCompatActivity {
                 int value = (Math.abs((int)Short.MIN_VALUE) + Short.MAX_VALUE) + Short.parseShort(decimalTextValue) + 1;
                 bigInt = new BigInteger(String.valueOf(value));
             }
-
-
-            //String octal = Convert.decimalToOctal(bigInt);
-
-            //octalText.setText(octal);
-            doConversions(bigInt);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                doConversions(bigInt);
+            }
+            else {
+                String binary = Convert.decimalToBinary(bigInt);
+                String octal = Convert.decimalToOctal(bigInt);
+                octalText.setText(octal);
+                binaryText.setText(binary);
+            }
         }
         else {
+            octalText.setText("");
+            binaryText.setText("");
+            hexText.setText("");
             return;
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void doConversions(final BigInteger bigInt) {
-        //final BigInteger newBigInt = bigInt;
         getMainExecutor().execute(() -> {
             String binary = Convert.decimalToBinary(bigInt);
 

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigInteger;
 
@@ -133,21 +134,31 @@ public class Decimal extends AppCompatActivity {
 
     public void copyToClipBoard(View v) {
         String copyText = "";
+        String viewName = "";
         if ((Button)v == findViewById(R.id.decimalClipBoard)) {
             copyText = (String)decimalText.getText();
+            viewName = "Decimal";
         }
         else if (v == findViewById(R.id.binaryClipBoard)) {
             copyText = (String)binaryText.getText();
+            viewName = "Binary";
         }
         else if (v == findViewById(R.id.octalClipBoard)) {
             copyText = (String)octalText.getText();
+            viewName = "Octal";
         }
         else {
             copyText = (String)hexText.getText();
+            viewName = "Hex";
         }
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("label",copyText);
         clipboard.setPrimaryClip(clip);
+
+        Context context = getApplicationContext();
+        CharSequence text = viewName + " copied to clipboard";
+        int duration = Toast.LENGTH_SHORT;
+        Toast.makeText(context, text, duration).show();
     }
 
     private class DoConversions extends AsyncTask<BigInteger, Void, String[]> {

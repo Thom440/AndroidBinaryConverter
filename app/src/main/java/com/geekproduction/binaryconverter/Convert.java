@@ -5,14 +5,13 @@ import java.math.BigInteger;
 public class Convert {
     public static String decimalToOctal(BigInteger bigInt) {
         BigInteger constantEight = new BigInteger("8");
-        BigInteger newBigInt = bigInt;
         BigInteger i = valueOfI(bigInt);
 
         String octal = "";
 
         do {
-            octal += newBigInt.divide(i);
-            newBigInt = newBigInt.mod(i);
+            octal += bigInt.divide(i);
+            bigInt = bigInt.mod(i);
             i = i.divide(constantEight);
         }
         while (i.compareTo(BigInteger.ZERO) != 0);
@@ -29,7 +28,7 @@ public class Convert {
     }
 
     public static String decimalToBinary(BigInteger bigInt) {
-        BigInteger remainder = BigInteger.ZERO;
+        BigInteger remainder;
         BigInteger constantTwo = new BigInteger("2");
         String binary = "";
 
@@ -40,5 +39,19 @@ public class Convert {
         }
         while (bigInt.compareTo(BigInteger.ZERO) > 0);
         return binary;
+    }
+
+    public static String decimalToHex(BigInteger bigInt) {
+        String[] hexArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+
+        String hex = "";
+
+        do {
+            int temp = bigInt.mod(BigInteger.valueOf(16)).intValue();
+            hex = hexArray[temp] + hex;
+            bigInt = bigInt.divide(BigInteger.valueOf(16));
+        }
+        while (bigInt.compareTo(BigInteger.ZERO) > 0);
+        return hex;
     }
 }

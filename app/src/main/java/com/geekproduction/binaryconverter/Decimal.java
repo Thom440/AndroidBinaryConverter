@@ -1,15 +1,13 @@
 package com.geekproduction.binaryconverter;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,13 +75,14 @@ public class Decimal extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
     public void onClick(View v) {
         String decimalTextValue = (String) decimalText.getText();
-        if (((Button)v).getText().equals("-") && decimalTextValue.equals("")) {
-            decimalTextValue = (String)((Button)v).getText();
-            decimalText.setText(decimalTextValue);
-            return;
+        if (((Button)v).getText().equals("-")) {
+            if (decimalTextValue.equals("")) {
+                decimalTextValue = (String)((Button)v).getText();
+                decimalText.setText(decimalTextValue);
+                return;
+            }
         }
         else if (((Button)v).getText().equals("")) {
             if (!(decimalText.getText().equals(""))) {
@@ -101,42 +100,82 @@ public class Decimal extends AppCompatActivity {
                 int value = (Math.abs((int)Short.MIN_VALUE) + Short.MAX_VALUE) + Short.parseShort(decimalTextValue) + 1;
                 bigInt = new BigInteger(String.valueOf(value));
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                doConversions(bigInt);
+            else if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validInt(decimalTextValue)) {
+                long value = (Math.abs((long)Integer.MIN_VALUE) + Integer.MAX_VALUE + Integer.parseInt(decimalTextValue) + 1);
+                bigInt = new BigInteger(String.valueOf(value));
+            }
+            else if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validLong(decimalTextValue)) {
+                BigInteger negativeValue = new BigInteger(String.valueOf(Long.MIN_VALUE));
+                negativeValue = negativeValue.abs();
+                bigInt = bigInt.add(negativeValue);
+                bigInt = bigInt.add(BigInteger.valueOf(Long.MAX_VALUE));
+                bigInt = bigInt.add(BigInteger.valueOf(Long.parseLong(decimalTextValue)));
+                bigInt = bigInt.add(BigInteger.ONE);
             }
             else {
-                String binary = Convert.decimalToBinary(bigInt);
-                String octal = Convert.decimalToOctal(bigInt);
-                octalText.setText(octal);
-                binaryText.setText(binary);
+                bigInt = bigInt.abs();
             }
+            new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
         }
         else {
             octalText.setText("");
             binaryText.setText("");
             hexText.setText("");
-            return;
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    private void doConversions(final BigInteger bigInt) {
-        getMainExecutor().execute(() -> {
-            String binary = Convert.decimalToBinary(bigInt);
-
-            binaryText.setText(binary);
-            getMainExecutor().execute(() -> {
-                String octal = Convert.decimalToOctal(bigInt);
-                octalText.setText(octal);
-            });
-
-        });
+    public void clearFields(View v) {
+        decimalText.setText("");
+        binaryText.setText("");
+        octalText.setText("");
+        hexText.setText("");
     }
 
     public void copyToClipBoard(View v) {
-        String copyText = (String)decimalText.getText();
+        String copyText = "";
+        if ((Button)v == findViewById(R.id.decimalClipBoard)) {
+            copyText = (String)decimalText.getText();
+        }
+        else if (v == findViewById(R.id.binaryClipBoard)) {
+            copyText = (String)binaryText.getText();
+        }
+        else if (v == findViewById(R.id.octalClipBoard)) {
+            copyText = (String)octalText.getText();
+        }
+        else {
+            copyText = (String)hexText.getText();
+        }
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("label",copyText);
         clipboard.setPrimaryClip(clip);
+    }
+
+    private class DoConversions extends AsyncTask<BigInteger, Void, String[]> {
+        @Override
+        protected String[] doInBackground(BigInteger... bigInt) {
+            String binary = Convert.decimalToBinary(bigInt[0]);
+            String octal = Convert.decimalToOctal(bigInt[0]);
+            String hex = Convert.decimalToHex(bigInt[0]);
+
+            String[] result = {binary, octal, hex};
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String... result) {
+            octalText.setText(result[1]);
+            binaryText.setText(result[0]);
+            hexText.setText(result[2]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate();
+        }
     }
 }

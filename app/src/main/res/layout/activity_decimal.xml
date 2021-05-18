@@ -189,6 +189,7 @@
             android:layout_marginStart="105dp"
             android:layout_marginTop="10dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView7"
             app:layout_constraintTop_toBottomOf="@+id/octalTextView" />
@@ -200,6 +201,7 @@
             android:layout_marginStart="100dp"
             android:layout_marginTop="10dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView5"
             app:layout_constraintTop_toBottomOf="@+id/binaryTextView" />
@@ -284,6 +286,7 @@
             android:layout_marginStart="90dp"
             android:layout_marginTop="10dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintTop_toBottomOf="@+id/decimalTextView" />
@@ -324,6 +327,7 @@
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="clearFields"
             android:text="Clear"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"

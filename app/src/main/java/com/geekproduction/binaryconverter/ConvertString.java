@@ -47,7 +47,10 @@ public class ConvertString extends AppCompatActivity {
         octalText = (TextView)findViewById(R.id.octalTextView5);
         binaryText = (TextView)findViewById(R.id.binaryTextView5);
         hexText = findViewById(R.id.hexTextView5);
-
+        decimalText.setText("");
+        octalText.setText("");
+        binaryText.setText("");
+        hexText.setText("");
 
         EditText edit = (EditText)findViewById(R.id.convertString);
         edit.addTextChangedListener(new TextWatcher() {

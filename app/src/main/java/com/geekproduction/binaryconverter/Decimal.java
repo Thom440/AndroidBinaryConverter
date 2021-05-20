@@ -1,5 +1,6 @@
 package com.geekproduction.binaryconverter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 
 public class Decimal extends AppCompatActivity {
@@ -35,16 +44,59 @@ public class Decimal extends AppCompatActivity {
         getSupportActionBar().setTitle("Decimal");
 
         decimalText = (TextView)findViewById(R.id.decimalTextView);
-        decimalText.setText("");
 
         binaryText = (TextView)findViewById(R.id.binaryTextView);
-        binaryText.setText("");
 
         octalText = (TextView)findViewById(R.id.octalTextView);
-        octalText.setText("");
 
         hexText = (TextView)findViewById(R.id.hexTextView);
+
+        restoreState();
+    }
+
+    private void restoreState() {
+        File path = getFilesDir();
+        File file = new File(path, "Decimal.txt");
+        if (file.exists()) {
+            try {
+                int length = (int)file.length();
+                byte[] bytes = new byte[length];
+
+                FileInputStream in = new FileInputStream(file);
+                in.read(bytes);
+                String decimal = new String(bytes);
+                if (decimal.equals("") || decimal.equals("-")) {
+                    fillInFields();
+                }
+                else {
+                    decimalText.setText(decimal);
+                    BigInteger bigInt = getBigInteger(decimal);
+                    new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
+                }
+            }
+            catch (FileNotFoundException ex) {
+                fillInFields();
+            }
+            catch (IOException ex) {
+                fillInFields();
+            }
+        }
+        else {
+            fillInFields();
+        }
+    }
+
+    private void fillInFields() {
+        decimalText.setText("");
+        binaryText.setText("");
+        octalText.setText("");
         hexText.setText("");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
     }
 
     @Override
@@ -94,33 +146,65 @@ public class Decimal extends AppCompatActivity {
             decimalTextValue += (String)((Button)v).getText();
         }
         decimalText.setText(decimalTextValue);
+        // Checking to see if the input is a valid big integer
         if (Validator.validBigInteger(decimalTextValue)) {
-            BigInteger bigInt = new BigInteger(decimalTextValue);
-            if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validShort(decimalTextValue)) {
-                int value = (Math.abs((int)Short.MIN_VALUE) + Short.MAX_VALUE) + Short.parseShort(decimalTextValue) + 1;
-                bigInt = new BigInteger(String.valueOf(value));
-            }
-            else if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validInt(decimalTextValue)) {
-                long value = (Math.abs((long)Integer.MIN_VALUE) + Integer.MAX_VALUE + Integer.parseInt(decimalTextValue) + 1);
-                bigInt = new BigInteger(String.valueOf(value));
-            }
-            else if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validLong(decimalTextValue)) {
-                BigInteger negativeValue = new BigInteger(String.valueOf(Long.MIN_VALUE));
-                negativeValue = negativeValue.abs();
-                bigInt = bigInt.add(negativeValue);
-                bigInt = bigInt.add(BigInteger.valueOf(Long.MAX_VALUE));
-                bigInt = bigInt.add(BigInteger.valueOf(Long.parseLong(decimalTextValue)));
-                bigInt = bigInt.add(BigInteger.ONE);
-            }
-            else {
-                bigInt = bigInt.abs();
-            }
+            BigInteger bigInt = getBigInteger(decimalTextValue);
             new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
         }
+        // If the number is not valid then set all of the fields to empty strings
         else {
             octalText.setText("");
             binaryText.setText("");
             hexText.setText("");
+        }
+        saveState();
+    }
+
+    private BigInteger getBigInteger(String decimalTextValue) {
+        BigInteger bigInt = new BigInteger(decimalTextValue);
+        // Checking to see if the number is negative and is a valid short
+        if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validShort(decimalTextValue)) {
+            int value = (Math.abs((int)Short.MIN_VALUE) + Short.MAX_VALUE) + Short.parseShort(decimalTextValue) + 1;
+            bigInt = new BigInteger(String.valueOf(value));
+        }
+        // Checking to see if the number is negative and a valid integer
+        else if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validInt(decimalTextValue)) {
+            long value = (Math.abs((long)Integer.MIN_VALUE) + Integer.MAX_VALUE + Integer.parseInt(decimalTextValue) + 1);
+            bigInt = new BigInteger(String.valueOf(value));
+        }
+        // Checking to see if the number is negative and a valid long
+        else if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validLong(decimalTextValue)) {
+            BigInteger negativeValue = new BigInteger(String.valueOf(Long.MIN_VALUE));
+            negativeValue = negativeValue.abs();
+            bigInt = negativeValue
+                    .add(BigInteger.valueOf(Long.MAX_VALUE))
+                    .add(BigInteger.valueOf(Long.parseLong(decimalTextValue)))
+                    .add(BigInteger.ONE);
+        }
+        else {
+            // If the number is not any of the valid types just convert it to the positive equivalent
+            bigInt = bigInt.abs();
+        }
+        return bigInt;
+    }
+
+    private void saveState() {
+        try {
+            File path = getFilesDir();
+            File file = new File(path, "Decimal.txt");
+            try (FileOutputStream output = new FileOutputStream(file)) {
+                if (decimalText.getText().equals("")) {
+                    output.write("".getBytes());
+                } else {
+                    output.write(decimalText.getText().toString().getBytes());
+                }
+            }
+        }
+        catch (IOException ex) {
+            Context context = getApplicationContext();
+            CharSequence text = "Failed to save state";
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
         }
     }
 
@@ -129,6 +213,7 @@ public class Decimal extends AppCompatActivity {
         binaryText.setText("");
         octalText.setText("");
         hexText.setText("");
+        saveState();
     }
 
     public void copyToClipBoard(View v) {

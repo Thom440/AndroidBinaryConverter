@@ -167,8 +167,7 @@ public class Decimal extends AppCompatActivity {
             String octal = Convert.decimalToOctal(bigInt[0]);
             String hex = Convert.decimalToHex(bigInt[0]);
 
-            String[] result = {binary, octal, hex};
-            return result;
+            return new String[]{binary, octal, hex};
         }
 
         @Override

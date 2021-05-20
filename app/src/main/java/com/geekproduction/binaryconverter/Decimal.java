@@ -88,7 +88,6 @@ public class Decimal extends AppCompatActivity {
         else if (((Button)v).getText().equals("")) {
             if (!(decimalText.getText().equals(""))) {
                 decimalTextValue = decimalTextValue.substring(0, decimalTextValue.length() - 1);
-                decimalText.setText(decimalTextValue);
             }
         }
         else {

@@ -66,7 +66,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/decimalTextView2" />
+            app:layout_constraintTop_toBottomOf="@+id/complimentView" />
 
         <TextView
             android:id="@+id/textView4"
@@ -86,8 +86,9 @@
             android:id="@+id/delete2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="89dp"
+            android:layout_marginTop="15dp"
             android:drawableEnd="@drawable/delete"
+            android:onClick="onClick"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -118,7 +119,8 @@
             android:id="@+id/btn13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="89dp"
+            android:layout_marginTop="15dp"
+            android:onClick="onClick"
             android:text="@string/_1"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/btn17"
@@ -138,7 +140,7 @@
             app:layout_constraintEnd_toStartOf="@+id/octalClipBoard2"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/decimalTextView2" />
+            app:layout_constraintTop_toBottomOf="@+id/complimentView" />
 
         <Button
             android:id="@+id/binaryClipBoard2"
@@ -170,7 +172,8 @@
             android:id="@+id/btn17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="89dp"
+            android:layout_marginTop="15dp"
+            android:onClick="onClick"
             android:text="@string/_0"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/delete2"
@@ -211,6 +214,42 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn17" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="35dp"
+            android:text="Two's Complement"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/twosComplimentClipboard"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/decimalTextView2" />
+
+        <Button
+            android:id="@+id/twosComplimentClipboard"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="15dp"
+            android:drawableEnd="@drawable/notepad"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/decimalTextView2" />
+
+        <TextView
+            android:id="@+id/complimentView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

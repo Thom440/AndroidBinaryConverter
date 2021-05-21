@@ -21,6 +21,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 
 public class ConvertString extends AppCompatActivity {
@@ -28,6 +33,7 @@ public class ConvertString extends AppCompatActivity {
     private TextView binaryText;
     private TextView hexText;
     private TextView decimalText;
+    private EditText edit;
 
     String octalResult;
     String binaryResult;
@@ -52,7 +58,7 @@ public class ConvertString extends AppCompatActivity {
         binaryText.setText("");
         hexText.setText("");
 
-        EditText edit = (EditText)findViewById(R.id.convertString);
+        edit = (EditText)findViewById(R.id.convertString);
         edit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -79,6 +85,7 @@ public class ConvertString extends AppCompatActivity {
                 binaryText.setText(binaryResult);
                 octalText.setText(octalResult);
                 hexText.setText((hexResult));
+                saveState();
             }
 
             @Override
@@ -86,6 +93,57 @@ public class ConvertString extends AppCompatActivity {
 
             }
         });
+        restoreState();
+    }
+
+    private void saveState() {
+        try {
+            File path = getFilesDir();
+            File file = new File(path, "String.txt");
+            try (FileOutputStream output = new FileOutputStream(file)) {
+                if (edit.getText().equals("")) {
+                    output.write("".getBytes());
+                } else {
+                    output.write(edit.getText().toString().getBytes());
+                }
+            }
+        }
+        catch (IOException ex) {
+            Context context = getApplicationContext();
+            CharSequence text = "Failed to save state";
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
+        }
+    }
+
+    private void restoreState() {
+        File path = getFilesDir();
+        File file = new File(path, "String.txt");
+        if (file.exists()) {
+            try {
+                int length = (int)file.length();
+                byte[] bytes = new byte[length];
+
+                FileInputStream in = new FileInputStream(file);
+                in.read(bytes);
+                String string = new String(bytes);
+                if (string.equals("")) {
+                    return;
+                }
+                else {
+                    edit.setText(string);
+                }
+            }
+            catch (FileNotFoundException ex) {
+                return;
+            }
+            catch (IOException ex) {
+                return;
+            }
+        }
+        else {
+            return;
+        }
     }
 
     public void clearFields(View v) {
@@ -159,8 +217,7 @@ public class ConvertString extends AppCompatActivity {
             String octal = Convert.decimalToOctal(bigInt) + " ";
             String hex = Convert.decimalToHex(bigInt) + " ";
 
-            String[] result = {binary, octal, hex};
-            return result;
+            return new String[]{binary, octal, hex};
         }
 
         @Override

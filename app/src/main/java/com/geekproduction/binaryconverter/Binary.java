@@ -1,9 +1,11 @@
 package com.geekproduction.binaryconverter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 
 public class Binary extends AppCompatActivity {
@@ -33,19 +41,75 @@ public class Binary extends AppCompatActivity {
         getSupportActionBar().setTitle("Binary Conversion");
 
         decimalText = (TextView)findViewById(R.id.decimalTextView2);
-        decimalText.setText("");
 
         binaryText = (TextView)findViewById(R.id.binaryTextView2);
-        binaryText.setText("");
 
         octalText = (TextView)findViewById(R.id.octalTextView2);
-        octalText.setText("");
 
         hexText = (TextView)findViewById(R.id.hexTextView2);
-        hexText.setText("");
 
         complementText = (TextView)findViewById(R.id.complimentView);
-        complementText.setText("");
+
+        restoreState();
+    }
+
+    private void saveState() {
+        try {
+            File path = getFilesDir();
+            File file = new File(path, "Binary.txt");
+            try (FileOutputStream output = new FileOutputStream(file)) {
+                if (binaryText.getText().equals("")) {
+                    output.write("".getBytes());
+                } else {
+                    output.write(binaryText.getText().toString().getBytes());
+                }
+            }
+        }
+        catch (IOException ex) {
+            Context context = getApplicationContext();
+            CharSequence text = "Failed to save state";
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
+        }
+    }
+
+    private void restoreState() {
+        File path = getFilesDir();
+        File file = new File(path, "Binary.txt");
+        if (file.exists()) {
+            try {
+                int length = (int)file.length();
+                byte[] bytes = new byte[length];
+
+                FileInputStream in = new FileInputStream(file);
+                in.read(bytes);
+                String binary = new String(bytes);
+                if (binary.equals("")) {
+                    fillInFields();
+                }
+                else {
+                    binaryText.setText(binary);
+                    BigInteger bigInt = new BigInteger(binary);
+                    new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
+                }
+            }
+            catch (FileNotFoundException ex) {
+                fillInFields();
+            }
+            catch (IOException ex) {
+                fillInFields();
+            }
+        }
+        else {
+            fillInFields();
+        }
+    }
+
+    private void fillInFields() {
+        decimalText.setText("");
+        binaryText.setText("");
+        octalText.setText("");
+        hexText.setText("");
     }
 
     public void onClick(View v) {
@@ -71,22 +135,9 @@ public class Binary extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("MyBoolean", true);
-        outState.putString("Binary", (String)binaryText.getText());
-        outState.putString("Decimal", (String)decimalText.getText());
-        outState.putString("Octal", (String)octalText.getText());
-        outState.putString("Hex", (String)hexText.getText());
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        binaryText.setText(savedInstanceState.getString("Binary"));
-        decimalText.setText(savedInstanceState.getString("Decimal"));
-        octalText.setText(savedInstanceState.getString("Octal"));
-        hexText.setText(savedInstanceState.getString("Hex"));
+        saveState();
     }
 
     @Override

@@ -92,11 +92,10 @@ public class Decimal extends AppCompatActivity {
         octalText.setText("");
         hexText.setText("");
     }
-
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        saveState();
     }
 
     @Override
@@ -157,7 +156,6 @@ public class Decimal extends AppCompatActivity {
             binaryText.setText("");
             hexText.setText("");
         }
-        saveState();
     }
 
     private BigInteger getBigInteger(String decimalTextValue) {

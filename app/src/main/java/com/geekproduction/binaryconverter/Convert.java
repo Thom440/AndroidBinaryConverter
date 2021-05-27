@@ -3,6 +3,14 @@ package com.geekproduction.binaryconverter;
 import java.math.BigInteger;
 
 public class Convert {
+
+    private static final BigInteger SHORT_MAX_TWOS_COMPLEMENT = new BigInteger("65535");
+    private static final BigInteger SHORT_MIN_TWOS_COMPLEMENT = new BigInteger("32768");
+    private static final BigInteger INT_MAX_TWOS_COMPLEMENT = new BigInteger("4294967295");
+    private static final BigInteger INT_MIN_TWOS_COMPLEMENT = new BigInteger("2147483648");
+    private static final BigInteger LONG_MAX_TWOS_COMPLEMENT = new BigInteger("18446744073709551615");
+    private static final BigInteger LONG_MIN_TWOS_COMPLEMENT = new BigInteger("9223372036854775808");
+
     public static String decimalToOctal(BigInteger bigInt) {
         BigInteger constantEight = new BigInteger("8");
         BigInteger i = valueOfI(bigInt);
@@ -72,18 +80,22 @@ public class Convert {
     public static String findTwosComplement(String decimalText) {
         if (Validator.validBigInteger(decimalText)) {
             BigInteger bigInt = new BigInteger(decimalText);
-            BigInteger intMaxTwosComplement = new BigInteger("4294967295");
-            BigInteger intMinTwosComplement = new BigInteger("2147483648");
-            BigInteger longTwosComplement = new BigInteger("18446744073709551615");
-            if (bigInt.compareTo(BigInteger.valueOf(65535)) <= 0 && bigInt.compareTo(BigInteger.valueOf(32768)) >= 0) {
+
+            if (bigInt.compareTo(SHORT_MAX_TWOS_COMPLEMENT) <= 0 && bigInt.compareTo(SHORT_MIN_TWOS_COMPLEMENT) >= 0) {
                 BigInteger newDecimal = bigInt.add(BigInteger.valueOf(Short.MIN_VALUE))
                         .subtract(BigInteger.valueOf(Short.MAX_VALUE))
                         .subtract(BigInteger.ONE);
                 return newDecimal.toString();
             }
-            else if (bigInt.compareTo(intMaxTwosComplement) <= 0 && bigInt.compareTo(intMinTwosComplement) >= 0) {
+            else if (bigInt.compareTo(INT_MAX_TWOS_COMPLEMENT) <= 0 && bigInt.compareTo(INT_MIN_TWOS_COMPLEMENT) >= 0) {
                 BigInteger newDecimal = bigInt.add(BigInteger.valueOf(Integer.MIN_VALUE))
                         .subtract(BigInteger.valueOf(Integer.MAX_VALUE))
+                        .subtract(BigInteger.ONE);
+                return newDecimal.toString();
+            }
+            else if (bigInt.compareTo(LONG_MAX_TWOS_COMPLEMENT) <= 0 && bigInt.compareTo(LONG_MIN_TWOS_COMPLEMENT) >= 0) {
+                BigInteger newDecimal = bigInt.add(BigInteger.valueOf(Long.MIN_VALUE))
+                        .subtract(BigInteger.valueOf(Long.MAX_VALUE))
                         .subtract(BigInteger.ONE);
                 return newDecimal.toString();
             }

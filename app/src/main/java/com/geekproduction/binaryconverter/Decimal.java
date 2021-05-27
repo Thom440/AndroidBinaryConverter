@@ -211,7 +211,6 @@ public class Decimal extends AppCompatActivity {
         binaryText.setText("");
         octalText.setText("");
         hexText.setText("");
-        saveState();
     }
 
     public void copyToClipBoard(View v) {

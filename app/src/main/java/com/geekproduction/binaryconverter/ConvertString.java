@@ -1,5 +1,6 @@
 package com.geekproduction.binaryconverter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -85,7 +86,6 @@ public class ConvertString extends AppCompatActivity {
                 binaryText.setText(binaryResult);
                 octalText.setText(octalResult);
                 hexText.setText((hexResult));
-                saveState();
             }
 
             @Override
@@ -178,6 +178,12 @@ public class ConvertString extends AppCompatActivity {
         CharSequence text = viewName + " copied to clipboard";
         int duration = Toast.LENGTH_SHORT;
         Toast.makeText(context, text, duration).show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveState();
     }
 
     @Override

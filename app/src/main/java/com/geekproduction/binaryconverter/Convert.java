@@ -104,4 +104,20 @@ public class Convert {
         }
         return "N/A";
     }
+
+    public static String octalToDecimal(BigInteger bigInt) {
+        BigInteger number;
+        BigInteger decimalNumber = BigInteger.ZERO;
+
+        int i = 0;
+
+        do {
+            number = bigInt.mod(BigInteger.valueOf(10)).multiply((BigInteger.valueOf(8)).pow(i));
+            bigInt = bigInt.divide(BigInteger.valueOf(10));
+            decimalNumber = decimalNumber.add(number);
+            i++;
+        }
+        while (bigInt.compareTo(BigInteger.ZERO) > 0);
+        return decimalNumber.toString();
+    }
 }

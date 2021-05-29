@@ -10,6 +10,8 @@ public class Convert {
     private static final BigInteger INT_MIN_TWOS_COMPLEMENT = new BigInteger("2147483648");
     private static final BigInteger LONG_MAX_TWOS_COMPLEMENT = new BigInteger("18446744073709551615");
     private static final BigInteger LONG_MIN_TWOS_COMPLEMENT = new BigInteger("9223372036854775808");
+    private static final BigInteger CONSTANT_EIGHT = new BigInteger("8");
+    private static final BigInteger CONSTANT_TWO = new BigInteger("2");
 
     public static String decimalToOctal(BigInteger bigInt) {
         BigInteger constantEight = new BigInteger("8");
@@ -28,21 +30,21 @@ public class Convert {
 
     private static BigInteger valueOfI(BigInteger bigInt) {
         BigInteger i = BigInteger.ONE;
-        BigInteger constantEight = new BigInteger("8");
-        while (i.multiply(constantEight).compareTo(bigInt) <= 0) {
-            i = i.multiply(constantEight);
+
+        while (i.multiply(CONSTANT_EIGHT).compareTo(bigInt) <= 0) {
+            i = i.multiply(CONSTANT_EIGHT);
         }
         return i;
     }
 
     public static String decimalToBinary(BigInteger bigInt) {
         BigInteger remainder;
-        BigInteger constantTwo = new BigInteger("2");
+
         String binary = "";
 
         do {
-            remainder = bigInt.mod(constantTwo);
-            bigInt = bigInt.divide(constantTwo);
+            remainder = bigInt.mod(CONSTANT_TWO);
+            bigInt = bigInt.divide(CONSTANT_TWO);
             binary = remainder + binary;
         }
         while (bigInt.compareTo(BigInteger.ZERO) > 0);

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -110,6 +112,15 @@ public class Binary extends AppCompatActivity {
         binaryText.setText("");
         octalText.setText("");
         hexText.setText("");
+        complementText.setText("");
+    }
+
+    public void clearFields(View v) {
+        decimalText.setText("");
+        binaryText.setText("");
+        octalText.setText("");
+        hexText.setText("");
+        complementText.setText("");
     }
 
     public void onClick(View v) {
@@ -131,7 +142,41 @@ public class Binary extends AppCompatActivity {
             decimalText.setText("");
             octalText.setText("");
             hexText.setText("");
+            complementText.setText("");
         }
+    }
+
+    public void copyToClipBoard(View v) {
+        String copyText = "";
+        String viewName = "";
+        if ((Button)v == findViewById(R.id.decimalClipBoard2)) {
+            copyText = (String)decimalText.getText();
+            viewName = "Decimal";
+        }
+        else if (v == findViewById(R.id.binaryClipBoard2)) {
+            copyText = (String)binaryText.getText();
+            viewName = "Binary";
+        }
+        else if (v == findViewById(R.id.octalClipBoard2)) {
+            copyText = (String)octalText.getText();
+            viewName = "Octal";
+        }
+        else if (v == findViewById(R.id.twosComplimentClipboard)) {
+            copyText = complementText.getText().toString();
+            viewName = "Two's Complement";
+        }
+        else {
+            copyText = (String)hexText.getText();
+            viewName = "Hex";
+        }
+        ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label",copyText);
+        clipboard.setPrimaryClip(clip);
+
+        Context context = getApplicationContext();
+        CharSequence text = viewName + " copied to clipboard";
+        int duration = Toast.LENGTH_SHORT;
+        Toast.makeText(context, text, duration).show();
     }
 
     @Override

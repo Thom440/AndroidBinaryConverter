@@ -12,6 +12,8 @@ public class Convert {
     private static final BigInteger LONG_MIN_TWOS_COMPLEMENT = new BigInteger("9223372036854775808");
     private static final BigInteger CONSTANT_EIGHT = new BigInteger("8");
     private static final BigInteger CONSTANT_TWO = new BigInteger("2");
+    private static final BigInteger CONSTANT_TEN = new BigInteger("10");
+    private static final BigInteger CONSTANT_SIXTEEN = new BigInteger("16");
 
     public static String decimalToOctal(BigInteger bigInt) {
         BigInteger constantEight = new BigInteger("8");
@@ -57,9 +59,9 @@ public class Convert {
         String hex = "";
 
         do {
-            int temp = bigInt.mod(BigInteger.valueOf(16)).intValue();
+            int temp = bigInt.mod(CONSTANT_SIXTEEN).intValue();
             hex = hexArray[temp] + hex;
-            bigInt = bigInt.divide(BigInteger.valueOf(16));
+            bigInt = bigInt.divide(CONSTANT_SIXTEEN);
         }
         while (bigInt.compareTo(BigInteger.ZERO) > 0);
         return hex;
@@ -67,13 +69,12 @@ public class Convert {
 
     public static String binaryToDecimal(BigInteger bigInt) {
         int i = 0;
-        BigInteger constantTwo = new BigInteger("2");
         BigInteger finalNumber = BigInteger.ZERO;
 
         while (bigInt.compareTo(BigInteger.ZERO) > 0) {
-            BigInteger decimalNumber = bigInt.mod(BigInteger.valueOf(10)).multiply(constantTwo.pow(i));
+            BigInteger decimalNumber = bigInt.mod(CONSTANT_TEN).multiply(CONSTANT_TWO.pow(i));
             finalNumber = finalNumber.add(decimalNumber);
-            bigInt = bigInt.divide(BigInteger.valueOf(10));
+            bigInt = bigInt.divide(CONSTANT_TEN);
             i++;
         }
         return finalNumber.toString();
@@ -106,15 +107,13 @@ public class Convert {
     }
 
     public static String octalToDecimal(BigInteger bigInt) {
-        BigInteger number;
         BigInteger decimalNumber = BigInteger.ZERO;
 
         int i = 0;
 
         do {
-            number = bigInt.mod(BigInteger.valueOf(10)).multiply((BigInteger.valueOf(8)).pow(i));
-            bigInt = bigInt.divide(BigInteger.valueOf(10));
-            decimalNumber = decimalNumber.add(number);
+            decimalNumber = decimalNumber.add(bigInt.mod(CONSTANT_TEN).multiply((CONSTANT_EIGHT).pow(i)));
+            bigInt = bigInt.divide(CONSTANT_TEN);
             i++;
         }
         while (bigInt.compareTo(BigInteger.ZERO) > 0);

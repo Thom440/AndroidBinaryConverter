@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Decimal extends AppCompatActivity {
@@ -65,8 +66,13 @@ public class Decimal extends AppCompatActivity {
                 FileInputStream in = new FileInputStream(file);
                 in.read(bytes);
                 String decimal = new String(bytes);
-                if (decimal.equals("") || decimal.equals("-")) {
+                if (decimal.equals("") || decimal.equals("-") || decimal.substring(decimal.length()).equals(".")) {
                     fillInFields();
+                }
+                else if (decimal.contains(".")) {
+                    decimalText.setText(decimal);
+                    BigDecimal bigDecimal = new BigDecimal(decimal);
+                    new DoDecimalPointConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
                 }
                 else {
                     decimalText.setText(decimal);
@@ -131,7 +137,21 @@ public class Decimal extends AppCompatActivity {
         String decimalTextValue = (String) decimalText.getText();
         if (((Button)v).getText().equals("-")) {
             if (decimalTextValue.equals("")) {
-                decimalTextValue = (String)((Button)v).getText();
+                decimalTextValue = ((Button)v).getText().toString();
+                decimalText.setText(decimalTextValue);
+                return;
+            }
+        }
+        else if (((Button)v).getText().equals(".")) {
+            if (decimalTextValue.equals("")) {
+                decimalText.setText("0.");
+                return;
+            }
+            else if (decimalTextValue.contains("-") || decimalTextValue.contains(".")) {
+                return;
+            }
+            else {
+                decimalTextValue += ((Button)v).getText().toString();
                 decimalText.setText(decimalTextValue);
                 return;
             }
@@ -139,14 +159,23 @@ public class Decimal extends AppCompatActivity {
         else if (((Button)v).getText().equals("")) {
             if (!(decimalText.getText().equals(""))) {
                 decimalTextValue = decimalTextValue.substring(0, decimalTextValue.length() - 1);
+                if (decimalTextValue.indexOf(".") == decimalTextValue.length() - 1) {
+                    decimalText.setText(decimalTextValue);
+                    return;
+                }
             }
         }
         else {
-            decimalTextValue += (String)((Button)v).getText();
+            decimalTextValue += ((Button)v).getText().toString();
         }
         decimalText.setText(decimalTextValue);
+        // Checking to see if the input is a valid Big Decimal
+        if (Validator.validBigDecimal(decimalTextValue)) {
+            BigDecimal bigDecimal = new BigDecimal(decimalTextValue);
+            new DoDecimalPointConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
+        }
         // Checking to see if the input is a valid big integer
-        if (Validator.validBigInteger(decimalTextValue)) {
+        else if (Validator.validBigInteger(decimalTextValue)) {
             BigInteger bigInt = getBigInteger(decimalTextValue);
             new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
         }
@@ -256,6 +285,33 @@ public class Decimal extends AppCompatActivity {
         protected void onPostExecute(String... result) {
             octalText.setText(result[1]);
             binaryText.setText(result[0]);
+            hexText.setText(result[2]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate();
+        }
+    }
+
+    private class DoDecimalPointConversions extends AsyncTask<BigDecimal, Void, String[]> {
+        @Override
+        protected String[] doInBackground(BigDecimal... bigDecimal) {
+            String binary = Convert.decimalPointToBinary(bigDecimal[0]);
+            String octal = Convert.decimalPointToOctal(bigDecimal[0]);
+            String hex = Convert.decimalPointToHex(bigDecimal[0]);
+            return new String[]{binary, octal, hex};
+        }
+
+        @Override
+        protected void onPostExecute(String... result) {
+            binaryText.setText(result[0]);
+            octalText.setText(result[1]);
             hexText.setText(result[2]);
         }
 

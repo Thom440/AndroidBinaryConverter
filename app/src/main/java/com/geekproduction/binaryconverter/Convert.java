@@ -1,5 +1,6 @@
 package com.geekproduction.binaryconverter;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Convert {
@@ -15,8 +16,10 @@ public class Convert {
     private static final BigInteger CONSTANT_TEN = new BigInteger("10");
     private static final BigInteger CONSTANT_SIXTEEN = new BigInteger("16");
 
+    private static final BigDecimal DECIMAL_CONSTANT_EIGHT = new BigDecimal("8");
+    private static final BigDecimal DECIMAL_CONSTANT_SIXTEEN = new BigDecimal("16");
+
     public static String decimalToOctal(BigInteger bigInt) {
-        BigInteger constantEight = new BigInteger("8");
         BigInteger i = valueOfI(bigInt);
 
         String octal = "";
@@ -24,7 +27,7 @@ public class Convert {
         do {
             octal += bigInt.divide(i);
             bigInt = bigInt.mod(i);
-            i = i.divide(constantEight);
+            i = i.divide(CONSTANT_EIGHT);
         }
         while (i.compareTo(BigInteger.ZERO) != 0);
         return octal;
@@ -118,5 +121,97 @@ public class Convert {
         }
         while (bigInt.compareTo(BigInteger.ZERO) > 0);
         return decimalNumber.toString();
+    }
+
+    public static String decimalPointToBinary(BigDecimal bigDecimal) {
+        int k = 10;
+        BigInteger remainder = BigInteger.ZERO;
+
+        String bigDecimalString = bigDecimal.toString();
+
+        int subStringLength = bigDecimalString.substring(bigDecimalString.indexOf(".") + 1).length();
+        if (subStringLength > k) {
+            k = subStringLength;
+        }
+
+        bigDecimalString = bigDecimalString.substring(0, bigDecimalString.indexOf("."));
+
+        BigDecimal fractionalPart = bigDecimal.subtract(new BigDecimal(bigDecimalString));
+
+        BigInteger bigInt = bigDecimal.toBigInteger();
+
+        String binary = decimalToBinary(bigInt);
+
+        binary += ".";
+
+        while (k != 0 && fractionalPart.compareTo(BigDecimal.ZERO) > 0) {
+            String integerPart = fractionalPart.multiply(BigDecimal.valueOf(2)).toBigInteger().toString();
+            binary += integerPart;
+            BigDecimal temp = fractionalPart.multiply(BigDecimal.valueOf(2));
+            fractionalPart = temp.subtract(new BigDecimal(integerPart));
+            k--;
+        }
+        return binary;
+    }
+
+    public static String decimalPointToOctal(BigDecimal bigDecimal) {
+        int k = 10;
+
+        BigInteger bigInt = bigDecimal.toBigInteger();
+        String octal = decimalToOctal(bigInt);
+
+        octal += ".";
+
+        String bigDecimalString = bigDecimal.toString();
+
+        int subStringLength = bigDecimalString.substring(bigDecimalString.indexOf(".") + 1).length();
+        if (subStringLength > k) {
+            k = subStringLength;
+        }
+
+        bigDecimalString = bigDecimalString.substring(0, bigDecimalString.indexOf("."));
+        BigDecimal fractionPart = bigDecimal.subtract(new BigDecimal(bigDecimalString));
+
+        do {
+            BigDecimal product = fractionPart.multiply(DECIMAL_CONSTANT_EIGHT);
+            String integerPart = product.toBigInteger().toString();
+            octal += integerPart;
+            fractionPart = product.subtract(new BigDecimal(integerPart));
+            k--;
+        }
+        while (fractionPart.compareTo(BigDecimal.ZERO) > 0 && k != 0);
+        return octal;
+    }
+
+    public static String decimalPointToHex(BigDecimal bigDecimal) {
+        int k = 10;
+
+        BigInteger bigInt = bigDecimal.toBigInteger();
+        String hex = decimalToHex(bigInt);
+
+        String bigDecimalString = bigDecimal.toString();
+
+        int subStringLength = bigDecimalString.substring(bigDecimalString.indexOf(".") + 1).length();
+        if (subStringLength > k) {
+            k = subStringLength;
+        }
+
+        hex += ".";
+
+        bigDecimalString = bigDecimalString.substring(0, bigDecimalString.indexOf("."));
+        BigDecimal fractionPart = bigDecimal.subtract(new BigDecimal(bigDecimalString));
+
+        String[] hexArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+
+        do {
+            BigDecimal product = fractionPart.multiply(DECIMAL_CONSTANT_SIXTEEN);
+            String integerPart = product.toBigInteger().toString();
+            int integer = Integer.parseInt(integerPart);
+            hex += hexArray[integer];
+            fractionPart = product.subtract(new BigDecimal(integerPart));
+            k--;
+        }
+        while (fractionPart.compareTo(BigDecimal.ZERO) > 0 && k != 0);
+        return hex;
     }
 }

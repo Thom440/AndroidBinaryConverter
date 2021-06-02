@@ -1,8 +1,22 @@
 package com.geekproduction.binaryconverter;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Validator {
+    public static boolean validBigDecimal(String number) {
+        try {
+            if (number.contains(".")) {
+                BigDecimal bigDecimal = new BigDecimal(number);
+                return true;
+            }
+        }
+        catch (NumberFormatException ex) {
+            return false;
+        }
+        return false;
+    }
+
     public static boolean validBigInteger(String number) {
         try {
             BigInteger bigInt = new BigInteger(number);

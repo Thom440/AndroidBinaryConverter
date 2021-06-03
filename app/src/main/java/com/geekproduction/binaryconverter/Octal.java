@@ -1,9 +1,13 @@
 package com.geekproduction.binaryconverter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 
 public class Octal extends AppCompatActivity {
@@ -36,6 +46,8 @@ public class Octal extends AppCompatActivity {
         decimalText = findViewById(R.id.decimalTextView3);
         binaryText = findViewById(R.id.binaryTextView3);
         hexText = findViewById(R.id.hexTextView3);
+
+        restoreState();
     }
 
     public void onClick(View v) {
@@ -60,12 +72,107 @@ public class Octal extends AppCompatActivity {
         }
     }
 
+    private void saveState() {
+        try {
+            File path = getFilesDir();
+            File file = new File(path, "Octal.txt");
+            try (FileOutputStream output = new FileOutputStream(file)) {
+                if (octalText.getText().equals("")) {
+                    output.write("".getBytes());
+                } else {
+                    output.write(octalText.getText().toString().getBytes());
+                }
+            }
+        }
+        catch (IOException ex) {
+            Context context = getApplicationContext();
+            CharSequence text = "Failed to save state";
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
+        }
+    }
+
+    private void restoreState() {
+        File path = getFilesDir();
+        File file = new File(path, "Octal.txt");
+        if (file.exists()) {
+            try {
+                int length = (int)file.length();
+                byte[] bytes = new byte[length];
+
+                FileInputStream in = new FileInputStream(file);
+                in.read(bytes);
+                String binary = new String(bytes);
+                if (binary.equals("")) {
+                    fillInFields();
+                }
+                else {
+                    octalText.setText(binary);
+                    BigInteger bigInt = new BigInteger(binary);
+                    new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
+                }
+            }
+            catch (FileNotFoundException ex) {
+                fillInFields();
+            }
+            catch (IOException ex) {
+                fillInFields();
+            }
+        }
+        else {
+            fillInFields();
+        }
+    }
+
+    public void copyToClipBoard(View v) {
+        String copyText = "";
+        String viewName = "";
+        if ((Button)v == findViewById(R.id.decimalClipBoard3)) {
+            copyText = (String)decimalText.getText();
+            viewName = "Decimal";
+        }
+        else if (v == findViewById(R.id.binaryClipBoard3)) {
+            copyText = (String)binaryText.getText();
+            viewName = "Binary";
+        }
+        else if (v == findViewById(R.id.octalClipBoard3)) {
+            copyText = (String)octalText.getText();
+            viewName = "Octal";
+        }
+        else {
+            copyText = (String)hexText.getText();
+            viewName = "Hex";
+        }
+        ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label",copyText);
+        clipboard.setPrimaryClip(clip);
+
+        Context context = getApplicationContext();
+        CharSequence text = viewName + " copied to clipboard";
+        int duration = Toast.LENGTH_SHORT;
+        Toast.makeText(context, text, duration).show();
+    }
+
+    private void fillInFields() {
+        octalText.setText("");
+        decimalText.setText("");
+        binaryText.setText("");
+        hexText.setText("");
+    }
+
     public void clearFields(View v) {
         octalText.setText("");
         decimalText.setText("");
         binaryText.setText("");
         hexText.setText("");
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveState();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

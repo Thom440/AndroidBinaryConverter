@@ -125,7 +125,6 @@ public class Convert {
 
     public static String decimalPointToBinary(BigDecimal bigDecimal) {
         int k = 10;
-        BigInteger remainder = BigInteger.ZERO;
 
         String bigDecimalString = bigDecimal.toString();
 

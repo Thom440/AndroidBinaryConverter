@@ -2,6 +2,7 @@ package com.geekproduction.binaryconverter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public class Convert {
 
@@ -18,6 +19,8 @@ public class Convert {
 
     private static final BigDecimal DECIMAL_CONSTANT_EIGHT = new BigDecimal("8");
     private static final BigDecimal DECIMAL_CONSTANT_SIXTEEN = new BigDecimal("16");
+
+    private static final String[] HEX_ARRAY = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 
     public static String decimalToOctal(BigInteger bigInt) {
         BigInteger i = valueOfI(bigInt);
@@ -57,13 +60,12 @@ public class Convert {
     }
 
     public static String decimalToHex(BigInteger bigInt) {
-        String[] hexArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 
         String hex = "";
 
         do {
             int temp = bigInt.mod(CONSTANT_SIXTEEN).intValue();
-            hex = hexArray[temp] + hex;
+            hex = HEX_ARRAY[temp] + hex;
             bigInt = bigInt.divide(CONSTANT_SIXTEEN);
         }
         while (bigInt.compareTo(BigInteger.ZERO) > 0);
@@ -200,17 +202,30 @@ public class Convert {
         bigDecimalString = bigDecimalString.substring(0, bigDecimalString.indexOf("."));
         BigDecimal fractionPart = bigDecimal.subtract(new BigDecimal(bigDecimalString));
 
-        String[] hexArray = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
-
         do {
             BigDecimal product = fractionPart.multiply(DECIMAL_CONSTANT_SIXTEEN);
             String integerPart = product.toBigInteger().toString();
             int integer = Integer.parseInt(integerPart);
-            hex += hexArray[integer];
+            hex += HEX_ARRAY[integer];
             fractionPart = product.subtract(new BigDecimal(integerPart));
             k--;
         }
         while (fractionPart.compareTo(BigDecimal.ZERO) > 0 && k != 0);
         return hex;
+    }
+
+    public static String hexToDecimal(String hex) {
+        BigInteger bigInt = BigInteger.ZERO;
+        BigInteger otherBigInt;
+        BigInteger temp;
+
+        for (int i = 0; i < hex.length(); i++) {
+            bigInt = bigInt.add(BigInteger.valueOf(Arrays.asList(HEX_ARRAY).indexOf(hex.substring(hex.length() - i - 1, hex.length() - i)))
+                                                                .multiply(CONSTANT_SIXTEEN.pow(i)));
+            //otherBigInt = temp.multiply(CONSTANT_SIXTEEN.pow(i));
+            //temp = temp.multiply(CONSTANT_SIXTEEN.pow(i));
+            //bigInt = bigInt.add(temp);
+        }
+        return bigInt.toString();
     }
 }

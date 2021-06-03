@@ -216,15 +216,11 @@ public class Convert {
 
     public static String hexToDecimal(String hex) {
         BigInteger bigInt = BigInteger.ZERO;
-        BigInteger otherBigInt;
-        BigInteger temp;
 
         for (int i = 0; i < hex.length(); i++) {
-            bigInt = bigInt.add(BigInteger.valueOf(Arrays.asList(HEX_ARRAY).indexOf(hex.substring(hex.length() - i - 1, hex.length() - i)))
-                                                                .multiply(CONSTANT_SIXTEEN.pow(i)));
-            //otherBigInt = temp.multiply(CONSTANT_SIXTEEN.pow(i));
-            //temp = temp.multiply(CONSTANT_SIXTEEN.pow(i));
-            //bigInt = bigInt.add(temp);
+            bigInt = bigInt.add(BigInteger.valueOf(Arrays.asList(HEX_ARRAY)
+                    .indexOf(hex.substring(hex.length() - i - 1, hex.length() - i)))
+                    .multiply(CONSTANT_SIXTEEN.pow(i)));
         }
         return bigInt.toString();
     }

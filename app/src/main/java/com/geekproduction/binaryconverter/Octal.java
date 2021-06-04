@@ -33,11 +33,12 @@ public class Octal extends AppCompatActivity {
     private TextView hexText;
 
     @Override
+    @SuppressWarnings("all")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_octal);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
         getSupportActionBar().setTitle("Octal Conversion");
@@ -92,6 +93,7 @@ public class Octal extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private void restoreState() {
         File path = getFilesDir();
         File file = new File(path, "Octal.txt");
@@ -125,22 +127,22 @@ public class Octal extends AppCompatActivity {
     }
 
     public void copyToClipBoard(View v) {
-        String copyText = "";
-        String viewName = "";
-        if ((Button)v == findViewById(R.id.decimalClipBoard3)) {
-            copyText = (String)decimalText.getText();
+        String copyText;
+        String viewName;
+        if (v == findViewById(R.id.decimalClipBoard3)) {
+            copyText = decimalText.getText().toString();
             viewName = "Decimal";
         }
         else if (v == findViewById(R.id.binaryClipBoard3)) {
-            copyText = (String)binaryText.getText();
+            copyText = binaryText.getText().toString();
             viewName = "Binary";
         }
         else if (v == findViewById(R.id.octalClipBoard3)) {
-            copyText = (String)octalText.getText();
+            copyText = octalText.getText().toString();
             viewName = "Octal";
         }
         else {
-            copyText = (String)hexText.getText();
+            copyText = hexText.getText().toString();
             viewName = "Hex";
         }
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
@@ -203,6 +205,7 @@ public class Octal extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("all")
     private class DoConversions extends AsyncTask<BigInteger, Void, String[]> {
         @Override
         protected String[] doInBackground(BigInteger... bigInt) {
@@ -211,8 +214,7 @@ public class Octal extends AppCompatActivity {
             String hex = Convert.decimalToHex(decimalBigInt);
             String binary = Convert.decimalToBinary(decimalBigInt);
 
-            String[] result = {binary, hex, decimal};
-            return result;
+            return new String[]{binary, hex, decimal};
         }
 
         @Override

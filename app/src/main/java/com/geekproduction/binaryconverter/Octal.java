@@ -102,13 +102,13 @@ public class Octal extends AppCompatActivity {
 
                 FileInputStream in = new FileInputStream(file);
                 in.read(bytes);
-                String binary = new String(bytes);
-                if (binary.equals("")) {
+                String octal = new String(bytes);
+                if (octal.equals("")) {
                     fillInFields();
                 }
                 else {
-                    octalText.setText(binary);
-                    BigInteger bigInt = new BigInteger(binary);
+                    octalText.setText(octal);
+                    BigInteger bigInt = new BigInteger(octal);
                     new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
                 }
             }

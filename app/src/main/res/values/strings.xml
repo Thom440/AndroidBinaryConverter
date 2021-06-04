@@ -23,4 +23,7 @@
     <string name="octalActivity">Octal</string>
     <string name="hexActivity">Hex</string>
     <string name="letterActivity">String</string>
+    <string name="string">Clear</string>
+    <string name="clear">Clear</string>
+    <string name="period">.</string>
 </resources>

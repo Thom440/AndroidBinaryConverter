@@ -31,11 +31,12 @@ public class Hex extends AppCompatActivity {
     private TextView octalText;
 
     @Override
+    @SuppressWarnings("all")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hex);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar4);
+        Toolbar myToolbar = findViewById(R.id.toolbar4);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
         getSupportActionBar().setTitle("Hex");
@@ -68,6 +69,7 @@ public class Hex extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private void restoreState() {
         File path = getFilesDir();
         File file = new File(path, "Hex.txt");
@@ -169,6 +171,7 @@ public class Hex extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("all")
     private class DoConversions extends AsyncTask<String, Void, String[]> {
         @Override
         protected String[] doInBackground(String... hex) {
@@ -177,8 +180,7 @@ public class Hex extends AppCompatActivity {
             String binary = Convert.decimalToBinary(decimalBigInt);
             String octal = Convert.decimalToOctal(decimalBigInt);
 
-            String[] result = {decimal, binary, octal};
-            return result;
+            return new String[]{decimal, binary, octal};
         }
 
         @Override

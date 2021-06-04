@@ -33,24 +33,25 @@ public class Binary extends AppCompatActivity {
     private TextView complementText;
 
     @Override
+    @SuppressWarnings("all")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_binary);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar3);
+        Toolbar myToolbar = findViewById(R.id.toolbar3);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
         getSupportActionBar().setTitle("Binary Conversion");
 
-        decimalText = (TextView)findViewById(R.id.decimalTextView2);
+        decimalText = findViewById(R.id.decimalTextView2);
 
-        binaryText = (TextView)findViewById(R.id.binaryTextView2);
+        binaryText = findViewById(R.id.binaryTextView2);
 
-        octalText = (TextView)findViewById(R.id.octalTextView2);
+        octalText = findViewById(R.id.octalTextView2);
 
-        hexText = (TextView)findViewById(R.id.hexTextView2);
+        hexText = findViewById(R.id.hexTextView2);
 
-        complementText = (TextView)findViewById(R.id.complimentView);
+        complementText = findViewById(R.id.complimentView);
 
         restoreState();
     }
@@ -75,6 +76,7 @@ public class Binary extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private void restoreState() {
         File path = getFilesDir();
         File file = new File(path, "Binary.txt");
@@ -124,18 +126,18 @@ public class Binary extends AppCompatActivity {
     }
 
     public void onClick(View v) {
-        String binaryTextValue = (String) binaryText.getText();
+        String binaryTextValue = binaryText.getText().toString();
         if (((Button)v).getText().equals("")) {
             if (!(binaryText.getText().equals(""))) {
                 binaryTextValue = binaryTextValue.substring(0, binaryTextValue.length() - 1);
             }
         }
         else {
-            binaryTextValue += (String)((Button)v).getText();
+            binaryTextValue += ((Button)v).getText().toString();
         }
         binaryText.setText(binaryTextValue);
         if (Validator.validBigInteger(binaryTextValue)) {
-            BigInteger bigInt = new BigInteger(String.valueOf(binaryTextValue));
+            BigInteger bigInt = new BigInteger(binaryTextValue);
             new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
         }
         else {
@@ -147,18 +149,18 @@ public class Binary extends AppCompatActivity {
     }
 
     public void copyToClipBoard(View v) {
-        String copyText = "";
-        String viewName = "";
-        if ((Button)v == findViewById(R.id.decimalClipBoard2)) {
-            copyText = (String)decimalText.getText();
+        String copyText;
+        String viewName;
+        if (v == findViewById(R.id.decimalClipBoard2)) {
+            copyText = decimalText.getText().toString();
             viewName = "Decimal";
         }
         else if (v == findViewById(R.id.binaryClipBoard2)) {
-            copyText = (String)binaryText.getText();
+            copyText = binaryText.getText().toString();
             viewName = "Binary";
         }
         else if (v == findViewById(R.id.octalClipBoard2)) {
-            copyText = (String)octalText.getText();
+            copyText = octalText.getText().toString();
             viewName = "Octal";
         }
         else if (v == findViewById(R.id.twosComplimentClipboard)) {
@@ -166,7 +168,7 @@ public class Binary extends AppCompatActivity {
             viewName = "Two's Complement";
         }
         else {
-            copyText = (String)hexText.getText();
+            copyText = hexText.getText().toString();
             viewName = "Hex";
         }
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
@@ -214,6 +216,7 @@ public class Binary extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("all")
     private class DoConversions extends AsyncTask<BigInteger, Void, String[]> {
         @Override
         protected String[] doInBackground(BigInteger... bigInt) {
@@ -223,8 +226,7 @@ public class Binary extends AppCompatActivity {
             String octal = Convert.decimalToOctal(decimalBigInt);
             String hex = Convert.decimalToHex(decimalBigInt);
 
-            String[] result = {octal, hex, decimal, twosComplement};
-            return result;
+            return new String[]{octal, hex, decimal, twosComplement};
         }
 
         @Override

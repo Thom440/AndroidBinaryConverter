@@ -22,9 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -35,26 +32,28 @@ public class Decimal extends AppCompatActivity {
     private TextView hexText;
 
     @Override
+    @SuppressWarnings("all")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_decimal);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar2);
+        Toolbar myToolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
         getSupportActionBar().setTitle("Decimal");
 
-        decimalText = (TextView)findViewById(R.id.decimalTextView);
+        decimalText = findViewById(R.id.decimalTextView);
 
-        binaryText = (TextView)findViewById(R.id.binaryTextView);
+        binaryText = findViewById(R.id.binaryTextView);
 
-        octalText = (TextView)findViewById(R.id.octalTextView);
+        octalText = findViewById(R.id.octalTextView);
 
-        hexText = (TextView)findViewById(R.id.hexTextView);
+        hexText = findViewById(R.id.hexTextView);
 
         restoreState();
     }
 
+    @SuppressWarnings("all")
     private void restoreState() {
         File path = getFilesDir();
         File file = new File(path, "Decimal.txt");
@@ -134,7 +133,7 @@ public class Decimal extends AppCompatActivity {
     }
 
     public void onClick(View v) {
-        String decimalTextValue = (String) decimalText.getText();
+        String decimalTextValue = decimalText.getText().toString();
         if (((Button)v).getText().equals("-")) {
             if (decimalTextValue.equals("")) {
                 decimalTextValue = ((Button)v).getText().toString();
@@ -191,7 +190,7 @@ public class Decimal extends AppCompatActivity {
         BigInteger bigInt = new BigInteger(decimalTextValue);
         // Checking to see if the number is negative and is a valid short
         if (bigInt.compareTo(BigInteger.ZERO) < 0 && Validator.validShort(decimalTextValue)) {
-            int value = (Math.abs((int)Short.MIN_VALUE) + Short.MAX_VALUE) + Short.parseShort(decimalTextValue) + 1;
+            int value = (Math.abs(Short.MIN_VALUE) + Short.MAX_VALUE) + Short.parseShort(decimalTextValue) + 1;
             bigInt = new BigInteger(String.valueOf(value));
         }
         // Checking to see if the number is negative and a valid integer
@@ -243,22 +242,22 @@ public class Decimal extends AppCompatActivity {
     }
 
     public void copyToClipBoard(View v) {
-        String copyText = "";
-        String viewName = "";
-        if ((Button)v == findViewById(R.id.decimalClipBoard)) {
-            copyText = (String)decimalText.getText();
+        String copyText;
+        String viewName;
+        if (v == findViewById(R.id.decimalClipBoard)) {
+            copyText = decimalText.getText().toString();
             viewName = "Decimal";
         }
         else if (v == findViewById(R.id.binaryClipBoard)) {
-            copyText = (String)binaryText.getText();
+            copyText = binaryText.getText().toString();
             viewName = "Binary";
         }
         else if (v == findViewById(R.id.octalClipBoard)) {
-            copyText = (String)octalText.getText();
+            copyText = octalText.getText().toString();
             viewName = "Octal";
         }
         else {
-            copyText = (String)hexText.getText();
+            copyText = hexText.getText().toString();
             viewName = "Hex";
         }
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
@@ -271,6 +270,7 @@ public class Decimal extends AppCompatActivity {
         Toast.makeText(context, text, duration).show();
     }
 
+    @SuppressWarnings("all")
     private class DoConversions extends AsyncTask<BigInteger, Void, String[]> {
         @Override
         protected String[] doInBackground(BigInteger... bigInt) {
@@ -299,6 +299,7 @@ public class Decimal extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private class DoDecimalPointConversions extends AsyncTask<BigDecimal, Void, String[]> {
         @Override
         protected String[] doInBackground(BigDecimal... bigDecimal) {

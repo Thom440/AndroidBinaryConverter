@@ -13,11 +13,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,25 +39,26 @@ public class ConvertString extends AppCompatActivity {
     String hexResult;
 
     @Override
+    @SuppressWarnings("all")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_convert_string);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar5);
+        Toolbar myToolbar = findViewById(R.id.toolbar5);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
         getSupportActionBar().setTitle("String");
 
-        decimalText = (TextView)findViewById(R.id.decimalTextView5);
-        octalText = (TextView)findViewById(R.id.octalTextView5);
-        binaryText = (TextView)findViewById(R.id.binaryTextView5);
+        decimalText = findViewById(R.id.decimalTextView5);
+        octalText = findViewById(R.id.octalTextView5);
+        binaryText = findViewById(R.id.binaryTextView5);
         hexText = findViewById(R.id.hexTextView5);
         decimalText.setText("");
         octalText.setText("");
         binaryText.setText("");
         hexText.setText("");
 
-        edit = (EditText)findViewById(R.id.convertString);
+        edit = findViewById(R.id.convertString);
         edit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -101,7 +100,7 @@ public class ConvertString extends AppCompatActivity {
             File path = getFilesDir();
             File file = new File(path, "String.txt");
             try (FileOutputStream output = new FileOutputStream(file)) {
-                if (edit.getText().equals("")) {
+                if (edit.getText().toString().equals("")) {
                     output.write("".getBytes());
                 } else {
                     output.write(edit.getText().toString().getBytes());
@@ -116,6 +115,7 @@ public class ConvertString extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private void restoreState() {
         File path = getFilesDir();
         File file = new File(path, "String.txt");
@@ -141,9 +141,6 @@ public class ConvertString extends AppCompatActivity {
                 return;
             }
         }
-        else {
-            return;
-        }
     }
 
     public void clearFields(View v) {
@@ -152,22 +149,22 @@ public class ConvertString extends AppCompatActivity {
     }
 
     public void copyToClipBoard(View v) {
-        String copyText = "";
-        String viewName = "";
+        String copyText;
+        String viewName;
         if (v == findViewById(R.id.decimalClipBoard5)) {
-            copyText = (String)decimalText.getText();
+            copyText = decimalText.getText().toString();
             viewName = "Decimal";
         }
         else if (v == findViewById(R.id.binaryClipBoard5)) {
-            copyText = (String)binaryText.getText();
+            copyText = binaryText.getText().toString();
             viewName = "Binary";
         }
         else if (v == findViewById(R.id.octalClipBoard5)) {
-            copyText = (String)octalText.getText();
+            copyText = octalText.getText().toString();
             viewName = "Octal";
         }
         else {
-            copyText = (String)hexText.getText();
+            copyText = hexText.getText().toString();
             viewName = "Hex";
         }
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
@@ -215,6 +212,7 @@ public class ConvertString extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("all")
     private class DoConversions extends AsyncTask<String, Void, String[]> {
         @Override
         protected String[] doInBackground(String... values) {

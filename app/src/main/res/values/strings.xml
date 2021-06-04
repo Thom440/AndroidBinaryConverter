@@ -26,4 +26,5 @@
     <string name="string">Clear</string>
     <string name="clear">Clear</string>
     <string name="period">.</string>
+    <string name="twoscomplement">Two\'s Complement</string>
 </resources>

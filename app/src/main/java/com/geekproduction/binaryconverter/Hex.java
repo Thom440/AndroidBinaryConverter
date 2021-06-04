@@ -1,9 +1,11 @@
 package com.geekproduction.binaryconverter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 
 public class Hex extends AppCompatActivity {
@@ -36,6 +44,66 @@ public class Hex extends AppCompatActivity {
         decimalText = findViewById(R.id.decimalTextView4);
         binaryText = findViewById(R.id.binaryTextView4);
         octalText = findViewById(R.id.octalTextView4);
+
+        restoreState();
+    }
+
+    private void saveState() {
+        try {
+            File path = getFilesDir();
+            File file = new File(path, "Hex.txt");
+            try (FileOutputStream output = new FileOutputStream(file)) {
+                if (hexText.getText().equals("")) {
+                    output.write("".getBytes());
+                } else {
+                    output.write(hexText.getText().toString().getBytes());
+                }
+            }
+        }
+        catch (IOException ex) {
+            Context context = getApplicationContext();
+            CharSequence text = "Failed to save state";
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
+        }
+    }
+
+    private void restoreState() {
+        File path = getFilesDir();
+        File file = new File(path, "Hex.txt");
+        if (file.exists()) {
+            try {
+                int length = (int)file.length();
+                byte[] bytes = new byte[length];
+
+                FileInputStream in = new FileInputStream(file);
+                in.read(bytes);
+                String hex = new String(bytes);
+                if (hex.equals("")) {
+                    fillInFields();
+                }
+                else {
+                    hexText.setText(hex);
+                    new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, hex);
+                }
+            }
+            catch (FileNotFoundException ex) {
+                fillInFields();
+            }
+            catch (IOException ex) {
+                fillInFields();
+            }
+        }
+        else {
+            fillInFields();
+        }
+    }
+
+    private void fillInFields() {
+        octalText.setText("");
+        decimalText.setText("");
+        binaryText.setText("");
+        hexText.setText("");
     }
 
     public void onClick(View v) {
@@ -64,6 +132,12 @@ public class Hex extends AppCompatActivity {
         decimalText.setText("");
         binaryText.setText("");
         octalText.setText("");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveState();
     }
 
     @Override

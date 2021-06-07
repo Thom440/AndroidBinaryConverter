@@ -19,6 +19,7 @@ public class Convert {
 
     private static final BigDecimal DECIMAL_CONSTANT_EIGHT = new BigDecimal("8");
     private static final BigDecimal DECIMAL_CONSTANT_SIXTEEN = new BigDecimal("16");
+    private static final BigDecimal DECIMAL_CONSTANT_TWO = new BigDecimal("2");
 
     private static final String[] HEX_ARRAY = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 
@@ -223,5 +224,30 @@ public class Convert {
                     .multiply(CONSTANT_SIXTEEN.pow(i)));
         }
         return bigInt.toString();
+    }
+
+    public static String binaryDecimalPointToDecimal(BigDecimal bigDecimal) {
+        BigInteger bigInt = bigDecimal.toBigInteger();
+
+        String binaryString = bigDecimal.toString();
+
+        int point = binaryString.indexOf(".");
+
+        String decimal = binaryToDecimal(bigInt);
+
+        decimal = decimal + ".";
+
+        BigDecimal multipleOfTwo = new BigDecimal("2");
+
+        BigDecimal fractional = BigDecimal.ZERO;
+
+        for (int i = point + 1; i < binaryString.length(); i++) {
+            long charAtIndex = Long.parseLong(Character.toString(binaryString.charAt(i)));
+            fractional = fractional.add(BigDecimal.valueOf(charAtIndex).divide(multipleOfTwo));
+            multipleOfTwo = multipleOfTwo.multiply(DECIMAL_CONSTANT_TWO);
+        }
+        String fractionalString = fractional.toString();
+        fractionalString = fractionalString.substring(2);
+        return decimal + fractionalString;
     }
 }

@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Binary extends AppCompatActivity {
@@ -91,6 +92,11 @@ public class Binary extends AppCompatActivity {
                 if (binary.equals("")) {
                     fillInFields();
                 }
+                else if (binary.contains(".")) {
+                    binaryText.setText(binary);
+                    BigDecimal bigDecimal = new BigDecimal(binary);
+                    new DoDecimalPointConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
+                }
                 else {
                     binaryText.setText(binary);
                     BigInteger bigInt = new BigInteger(binary);
@@ -132,11 +138,29 @@ public class Binary extends AppCompatActivity {
                 binaryTextValue = binaryTextValue.substring(0, binaryTextValue.length() - 1);
             }
         }
+        else if (((Button)v).getText().equals(".")) {
+            if (binaryTextValue.equals("")) {
+                decimalText.setText("0.");
+                return;
+            }
+            else if (binaryTextValue.contains(".")) {
+                return;
+            }
+            else {
+                binaryTextValue += ((Button)v).getText().toString();
+                binaryText.setText(binaryTextValue);
+                return;
+            }
+        }
         else {
             binaryTextValue += ((Button)v).getText().toString();
         }
         binaryText.setText(binaryTextValue);
-        if (Validator.validBigInteger(binaryTextValue)) {
+        if (Validator.validBigDecimal(binaryTextValue)) {
+            BigDecimal bigDecimal = new BigDecimal(binaryTextValue);
+            new DoDecimalPointConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
+        }
+        else if (Validator.validBigInteger(binaryTextValue)) {
             BigInteger bigInt = new BigInteger(binaryTextValue);
             new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
         }
@@ -248,5 +272,22 @@ public class Binary extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
+    private class DoDecimalPointConversion extends AsyncTask<BigDecimal, Void, String[]> {
+        @Override
+        protected String[] doInBackground(BigDecimal... bigDecimal) {
+            String decimal = Convert.binaryDecimalPointToDecimal(bigDecimal[0]);
+            String octal = Convert.decimalPointToOctal(new BigDecimal(decimal));
+            String hex = Convert.decimalPointToHex(new BigDecimal(decimal));
+            return new String[]{decimal, octal, hex};
+        }
 
+        @Override
+        protected void onPostExecute(String[] strings) {
+            decimalText.setText(strings[0]);
+            octalText.setText(strings[1]);
+            hexText.setText(strings[2]);
+            complementText.setText("N/A");
+        }
+    }
 }

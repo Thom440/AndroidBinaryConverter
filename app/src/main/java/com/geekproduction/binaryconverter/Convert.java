@@ -2,6 +2,7 @@ package com.geekproduction.binaryconverter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Arrays;
 
 public class Convert {
@@ -249,5 +250,36 @@ public class Convert {
         String fractionalString = fractional.toString();
         fractionalString = fractionalString.substring(2);
         return decimal + fractionalString;
+    }
+
+    public static String octalDecimalPointToDecimal(BigDecimal bigDecimal) {
+        int k = 20;
+        BigInteger bigInt = bigDecimal.toBigInteger();
+
+        String decimal = octalToDecimal(bigInt);
+
+        decimal = decimal + ".";
+
+        String bigDecimalString = bigDecimal.toString();
+
+        bigDecimalString = bigDecimalString.substring(0, bigDecimalString.indexOf('.'));
+
+        BigDecimal fractionalPart = bigDecimal.subtract(new BigDecimal(bigDecimalString));
+        String fractionalPartString = fractionalPart.toString();
+        fractionalPartString = fractionalPartString.substring(2);
+        if (fractionalPartString.length() > k) {
+            k = fractionalPartString.length();
+        }
+        BigDecimal newFraction = new BigDecimal("0.0");
+
+        for (int i = 0; i < fractionalPartString.length(); i++) {
+            int negativeIndex = (i + 1) * -1;
+            long singleNumber = Long.parseLong(fractionalPartString.substring(i, i + 1));
+            if (singleNumber != 0) {
+                newFraction = newFraction.add(BigDecimal.valueOf(singleNumber).multiply(DECIMAL_CONSTANT_EIGHT.pow(negativeIndex, new MathContext(k))));
+            }
+        }
+        String newFractionString = newFraction.toString();
+        return decimal + newFractionString.substring(2);
     }
 }

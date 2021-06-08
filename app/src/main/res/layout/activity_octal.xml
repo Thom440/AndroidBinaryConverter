@@ -295,8 +295,22 @@
             android:layout_marginTop="10dp"
             android:onClick="clearFields"
             android:text="@string/clear"
-            android:textSize="24sp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button9"
+            app:layout_constraintTop_toBottomOf="@+id/btn10" />
+
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="onClick"
+            android:text="@string/period"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/clearOctal"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn10" />
     </androidx.constraintlayout.widget.ConstraintLayout>

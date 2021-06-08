@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Octal extends AppCompatActivity {
@@ -56,12 +57,34 @@ public class Octal extends AppCompatActivity {
         if (((Button)v).getText().equals("")) {
             if (!octalText.getText().equals("")) {
                 octalTextValue = octalTextValue.substring(0, octalTextValue.length() - 1);
+                if (octalTextValue.indexOf(".") == octalTextValue.length() - 1) {
+                    octalText.setText(octalTextValue);
+                    return;
+                }
+            }
+        }
+        else if (((Button)v).getText().equals(".")) {
+            if (octalTextValue.equals("")) {
+                octalText.setText("0.");
+                return;
+            }
+            else if (octalTextValue.contains(".")) {
+                return;
+            }
+            else {
+                octalTextValue += ((Button)v).getText().toString();
+                octalText.setText(octalTextValue);
+                return;
             }
         }
         else {
             octalTextValue += ((Button)v).getText();
         }
         octalText.setText(octalTextValue);
+        if (Validator.validBigDecimal(octalTextValue)) {
+            BigDecimal bigDecimal = new BigDecimal(octalTextValue);
+            new DoDecimalPointConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
+        }
         if (Validator.validBigInteger(octalTextValue)) {
             BigInteger bigInt = new BigInteger(octalTextValue);
             new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
@@ -108,7 +131,16 @@ public class Octal extends AppCompatActivity {
                 if (octal.equals("")) {
                     fillInFields();
                 }
-                else {
+                else if (octal.indexOf(".") == octal.length() - 1) {
+                    fillInFields();
+                    return;
+                }
+                else if (Validator.validBigDecimal(octal)) {
+                    octalText.setText(octal);
+                    BigDecimal bigDecimal = new BigDecimal(octal);
+                    new DoDecimalPointConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
+                }
+                else if (Validator.validBigInteger(octal)) {
                     octalText.setText(octal);
                     BigInteger bigInt = new BigInteger(octal);
                     new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
@@ -232,6 +264,23 @@ public class Octal extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate();
+        }
+    }
+
+    private class DoDecimalPointConversion extends AsyncTask<BigDecimal, Void, String[]> {
+        @Override
+        protected String[] doInBackground(BigDecimal... bigDecimal) {
+            String decimal = Convert.octalDecimalPointToDecimal(bigDecimal[0]);
+            String binary = Convert.decimalPointToBinary(new BigDecimal(decimal));
+            String hex = Convert.decimalPointToHex(new BigDecimal(decimal));
+            return new String[]{decimal, binary, hex};
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            decimalText.setText(strings[0]);
+            binaryText.setText(strings[1]);
+            hexText.setText(strings[2]);
         }
     }
 }

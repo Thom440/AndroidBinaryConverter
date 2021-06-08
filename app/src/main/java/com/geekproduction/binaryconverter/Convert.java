@@ -148,9 +148,9 @@ public class Convert {
         binary += ".";
 
         while (k != 0 && fractionalPart.compareTo(BigDecimal.ZERO) > 0) {
-            String integerPart = fractionalPart.multiply(BigDecimal.valueOf(2)).toBigInteger().toString();
+            String integerPart = fractionalPart.multiply(DECIMAL_CONSTANT_TWO).toBigInteger().toString();
             binary += integerPart;
-            BigDecimal temp = fractionalPart.multiply(BigDecimal.valueOf(2));
+            BigDecimal temp = fractionalPart.multiply(DECIMAL_CONSTANT_TWO);
             fractionalPart = temp.subtract(new BigDecimal(integerPart));
             k--;
         }
@@ -250,7 +250,6 @@ public class Convert {
             multipleOfTwo = multipleOfTwo.multiply(DECIMAL_CONSTANT_TWO);
         }
         String fractionalString = fractional.toString();
-        //fractionalString = fractionalString.substring(2);
         return decimal + fractionalString.substring(2);
     }
 
@@ -278,10 +277,41 @@ public class Convert {
             int negativeIndex = (i + 1) * -1;
             long singleNumber = Long.parseLong(fractionalPartString.substring(i, i + 1));
             if (singleNumber != 0) {
-                newFraction = newFraction.add(BigDecimal.valueOf(singleNumber).multiply(DECIMAL_CONSTANT_EIGHT.pow(negativeIndex, new MathContext(k))));
+                newFraction = newFraction
+                        .add(BigDecimal
+                                .valueOf(singleNumber)
+                                .multiply(DECIMAL_CONSTANT_EIGHT
+                                        .pow(negativeIndex, new MathContext(k))));
             }
         }
         String newFractionString = newFraction.toString();
         return decimal + newFractionString.substring(2);
+    }
+
+    public static String hexDecimalPointToDecimal(String hex) {
+        int k = 15;
+        String decimal = hexToDecimal(hex.substring(0, hex.indexOf(".")));
+
+        decimal = decimal + ".";
+
+        String fractionalPart = hex.substring(hex.indexOf(".") + 1);
+        if (fractionalPart.length() > k) {
+            k = fractionalPart.length();
+        }
+
+        BigDecimal fraction = new BigDecimal("0.0");
+        BigDecimal temp;
+
+        for (int i = 0; i < fractionalPart.length(); i++) {
+            String index = fractionalPart.substring(i, i + 1);
+            int negativeIndex = (i + 1) * -1;
+            long singleNumber = Arrays.asList(HEX_ARRAY).indexOf(index);
+            if (singleNumber != 0) {
+                temp = BigDecimal.valueOf(singleNumber).multiply(DECIMAL_CONSTANT_SIXTEEN.pow(negativeIndex, new MathContext(k)));
+                fraction = fraction.add(temp);
+            }
+        }
+        String fractionString = fraction.toString();
+        return decimal + fractionString.substring(2);
     }
 }

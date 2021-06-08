@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Hex extends AppCompatActivity {
@@ -84,9 +87,16 @@ public class Hex extends AppCompatActivity {
                 if (hex.equals("")) {
                     fillInFields();
                 }
-                else {
+                else if (hex.contains(".") && hex.indexOf(".") != hex.length() - 1) {
+                    hexText.setText(hex);
+                    new DoDecimalConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, hex);
+                }
+                else if (!hex.contains(".")) {
                     hexText.setText(hex);
                     new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, hex);
+                }
+                else {
+                    fillInFields();
                 }
             }
             catch (FileNotFoundException ex) {
@@ -108,6 +118,35 @@ public class Hex extends AppCompatActivity {
         hexText.setText("");
     }
 
+    public void copyToClipBoard(View v) {
+        String copyText;
+        String viewName;
+        if (v == findViewById(R.id.decimalClipBoard4)) {
+            copyText = decimalText.getText().toString();
+            viewName = "Decimal";
+        }
+        else if (v == findViewById(R.id.binaryClipBoard4)) {
+            copyText = binaryText.getText().toString();
+            viewName = "Binary";
+        }
+        else if (v == findViewById(R.id.octalClipBoard4)) {
+            copyText = octalText.getText().toString();
+            viewName = "Octal";
+        }
+        else {
+            copyText = hexText.getText().toString();
+            viewName = "Hex";
+        }
+        ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label",copyText);
+        clipboard.setPrimaryClip(clip);
+
+        Context context = getApplicationContext();
+        CharSequence text = viewName + " copied to clipboard";
+        int duration = Toast.LENGTH_SHORT;
+        Toast.makeText(context, text, duration).show();
+    }
+
     public void onClick(View v) {
         String hexTextValue = hexText.getText().toString();
         if (((Button)v).getText().equals("")) {
@@ -115,12 +154,31 @@ public class Hex extends AppCompatActivity {
                 hexTextValue = hexTextValue.substring(0, hexTextValue.length() - 1);
             }
         }
+        else if (((Button)v).getText().equals(".")) {
+            if (hexTextValue.equals("")) {
+                hexText.setText("0.");
+                return;
+            }
+            else if (hexTextValue.contains(".")) {
+                return;
+            }
+            else {
+                hexTextValue += ((Button)v).getText().toString();
+                hexText.setText(hexTextValue);
+                return;
+            }
+        }
         else {
             hexTextValue += ((Button)v).getText().toString();
         }
         hexText.setText(hexTextValue);
         if (!hexTextValue.equals("")) {
-            new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, hexTextValue);
+            if (hexTextValue.contains(".") && hexTextValue.indexOf(".") != hexTextValue.length() - 1) {
+                new DoDecimalConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, hexTextValue);
+            }
+            else {
+                new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, hexTextValue);
+            }
         }
         else {
             decimalText.setText("");
@@ -198,6 +256,23 @@ public class Hex extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate();
+        }
+    }
+
+    private class DoDecimalConversion extends AsyncTask<String, Void, String[]> {
+        @Override
+        protected String[] doInBackground(String... strings) {
+            String decimal = Convert.hexDecimalPointToDecimal(strings[0]);
+            String binary = Convert.decimalPointToBinary(new BigDecimal(decimal));
+            String octal = Convert.decimalPointToOctal(new BigDecimal(decimal));
+            return new String[]{decimal, binary, octal};
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            decimalText.setText(strings[0]);
+            binaryText.setText(strings[1]);
+            octalText.setText(strings[2]);
         }
     }
 }

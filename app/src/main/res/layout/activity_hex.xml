@@ -91,11 +91,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="12dp"
             android:drawableEnd="@drawable/delete"
             android:onClick="onClick"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button10"
             app:layout_constraintTop_toBottomOf="@+id/button6" />
 
         <Button
@@ -105,6 +106,7 @@
             android:layout_marginStart="110dp"
             android:layout_marginTop="10dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView16"
@@ -143,6 +145,7 @@
             android:layout_marginStart="90dp"
             android:layout_marginTop="10dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView14"
@@ -231,6 +234,7 @@
             android:layout_marginStart="100dp"
             android:layout_marginTop="10dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView15"
@@ -255,6 +259,7 @@
             android:layout_height="37dp"
             android:layout_marginStart="115dp"
             android:drawableEnd="@drawable/notepad"
+            android:onClick="copyToClipBoard"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView13"
@@ -391,11 +396,24 @@
             android:id="@+id/clearHex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_marginTop="10dp"
             android:onClick="clearFields"
             android:text="@string/clear"
+            app:layout_constraintEnd_toStartOf="@+id/button10"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+        <Button
+            android:id="@+id/button10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="onClick"
+            android:text="@string/period"
+            app:layout_constraintEnd_toStartOf="@+id/delete4"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/clearHex"
+            app:layout_constraintTop_toBottomOf="@+id/button4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

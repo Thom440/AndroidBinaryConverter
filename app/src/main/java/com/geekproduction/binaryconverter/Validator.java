@@ -6,7 +6,7 @@ import java.math.BigInteger;
 public class Validator {
     public static boolean validBigDecimal(String number) {
         try {
-            if (number.contains(".")) {
+            if (number.contains(".") && number.indexOf(".") != number.length() - 1) {
                 BigDecimal bigDecimal = new BigDecimal(number);
                 return true;
             }

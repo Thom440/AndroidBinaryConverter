@@ -55,12 +55,8 @@ public class Octal extends AppCompatActivity {
     public void onClick(View v) {
         String octalTextValue = octalText.getText().toString();
         if (((Button)v).getText().equals("")) {
-            if (!octalText.getText().equals("")) {
+            if (!octalTextValue.equals("")) {
                 octalTextValue = octalTextValue.substring(0, octalTextValue.length() - 1);
-                if (octalTextValue.indexOf(".") == octalTextValue.length() - 1) {
-                    octalText.setText(octalTextValue);
-                    return;
-                }
             }
         }
         else if (((Button)v).getText().equals(".")) {
@@ -85,7 +81,7 @@ public class Octal extends AppCompatActivity {
             BigDecimal bigDecimal = new BigDecimal(octalTextValue);
             new DoDecimalPointConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
         }
-        if (Validator.validBigInteger(octalTextValue)) {
+        else if (Validator.validBigInteger(octalTextValue)) {
             BigInteger bigInt = new BigInteger(octalTextValue);
             new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);
         }

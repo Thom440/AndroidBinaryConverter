@@ -253,7 +253,7 @@ public class Convert {
     }
 
     public static String octalDecimalPointToDecimal(BigDecimal bigDecimal) {
-        int k = 20;
+        int k = 10;
         BigInteger bigInt = bigDecimal.toBigInteger();
 
         String decimal = octalToDecimal(bigInt);

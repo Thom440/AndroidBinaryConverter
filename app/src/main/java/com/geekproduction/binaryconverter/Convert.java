@@ -240,16 +240,18 @@ public class Convert {
 
         BigDecimal multipleOfTwo = new BigDecimal("2");
 
-        BigDecimal fractional = BigDecimal.ZERO;
+        BigDecimal fractional = new BigDecimal("0.0");
 
         for (int i = point + 1; i < binaryString.length(); i++) {
             long charAtIndex = Long.parseLong(Character.toString(binaryString.charAt(i)));
-            fractional = fractional.add(BigDecimal.valueOf(charAtIndex).divide(multipleOfTwo));
+            if (charAtIndex != 0) {
+                fractional = fractional.add(BigDecimal.valueOf(charAtIndex).divide(multipleOfTwo));
+            }
             multipleOfTwo = multipleOfTwo.multiply(DECIMAL_CONSTANT_TWO);
         }
         String fractionalString = fractional.toString();
-        fractionalString = fractionalString.substring(2);
-        return decimal + fractionalString;
+        //fractionalString = fractionalString.substring(2);
+        return decimal + fractionalString.substring(2);
     }
 
     public static String octalDecimalPointToDecimal(BigDecimal bigDecimal) {

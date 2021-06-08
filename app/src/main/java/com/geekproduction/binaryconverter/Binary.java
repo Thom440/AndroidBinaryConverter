@@ -92,12 +92,16 @@ public class Binary extends AppCompatActivity {
                 if (binary.equals("")) {
                     fillInFields();
                 }
-                else if (binary.contains(".")) {
+                else if (binary.indexOf(".") == binary.length() - 1) {
+                    fillInFields();
+                    return;
+                }
+                else if (Validator.validBigDecimal(binary)) {
                     binaryText.setText(binary);
                     BigDecimal bigDecimal = new BigDecimal(binary);
                     new DoDecimalPointConversion().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
                 }
-                else {
+                else if (Validator.validBigInteger(binary)) {
                     binaryText.setText(binary);
                     BigInteger bigInt = new BigInteger(binary);
                     new DoConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigInt);

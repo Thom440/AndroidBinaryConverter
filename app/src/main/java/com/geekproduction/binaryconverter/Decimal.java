@@ -40,7 +40,7 @@ public class Decimal extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
-        getSupportActionBar().setTitle("Decimal");
+        getSupportActionBar().setTitle("Decimal Conversion");
 
         decimalText = findViewById(R.id.decimalTextView);
 

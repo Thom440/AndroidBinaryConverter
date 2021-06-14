@@ -47,7 +47,7 @@ public class ConvertString extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar5);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
-        getSupportActionBar().setTitle("String");
+        getSupportActionBar().setTitle("String Conversion");
 
         decimalText = findViewById(R.id.decimalTextView5);
         octalText = findViewById(R.id.octalTextView5);

@@ -42,7 +42,7 @@ public class Hex extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar4);
         setSupportActionBar(myToolbar);
         myToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.menu_icon));
-        getSupportActionBar().setTitle("Hex");
+        getSupportActionBar().setTitle("Hex Conversion");
 
         hexText = findViewById(R.id.hexTextView4);
         decimalText = findViewById(R.id.decimalTextView4);

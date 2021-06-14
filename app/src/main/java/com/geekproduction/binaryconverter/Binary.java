@@ -281,9 +281,10 @@ public class Binary extends AppCompatActivity {
         @Override
         protected String[] doInBackground(BigDecimal... bigDecimal) {
             String decimal = Convert.binaryDecimalPointToDecimal(bigDecimal[0]);
+            String twosComplement = Convert.findTwosComplement(decimal.substring(0, decimal.indexOf(".")));
             String octal = Convert.decimalPointToOctal(new BigDecimal(decimal));
             String hex = Convert.decimalPointToHex(new BigDecimal(decimal));
-            return new String[]{decimal, octal, hex};
+            return new String[]{decimal, octal, hex, twosComplement};
         }
 
         @Override
@@ -291,7 +292,12 @@ public class Binary extends AppCompatActivity {
             decimalText.setText(strings[0]);
             octalText.setText(strings[1]);
             hexText.setText(strings[2]);
-            complementText.setText("N/A");
+            if (!strings[3].equals("N/A")) {
+                complementText.setText(strings[3] + strings[0].substring(strings[0].indexOf("."), strings[0].length()));
+            }
+            else {
+                complementText.setText(strings[3]);
+            }
         }
     }
 }

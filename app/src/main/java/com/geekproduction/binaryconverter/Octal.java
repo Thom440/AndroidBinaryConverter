@@ -263,6 +263,7 @@ public class Octal extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private class DoDecimalPointConversion extends AsyncTask<BigDecimal, Void, String[]> {
         @Override
         protected String[] doInBackground(BigDecimal... bigDecimal) {

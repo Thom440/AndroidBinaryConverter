@@ -130,6 +130,8 @@ public class Convert {
     public static String decimalPointToBinary(BigDecimal bigDecimal) {
         int k = 20;
 
+        bigDecimal = bigDecimal.abs();
+
         String bigDecimalString = bigDecimal.toString();
 
         int subStringLength = bigDecimalString.substring(bigDecimalString.indexOf(".") + 1).length();
@@ -160,6 +162,8 @@ public class Convert {
     public static String decimalPointToOctal(BigDecimal bigDecimal) {
         int k = 20;
 
+        bigDecimal = bigDecimal.abs();
+
         BigInteger bigInt = bigDecimal.toBigInteger();
         String octal = decimalToOctal(bigInt);
 
@@ -188,6 +192,8 @@ public class Convert {
 
     public static String decimalPointToHex(BigDecimal bigDecimal) {
         int k = 20;
+
+        bigDecimal = bigDecimal.abs();
 
         BigInteger bigInt = bigDecimal.toBigInteger();
         String hex = decimalToHex(bigInt);

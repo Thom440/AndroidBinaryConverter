@@ -146,7 +146,7 @@ public class Decimal extends AppCompatActivity {
                 decimalText.setText("0.");
                 return;
             }
-            else if (decimalTextValue.contains("-") || decimalTextValue.contains(".")) {
+            else if (decimalTextValue.contains(".")) {
                 return;
             }
             else {

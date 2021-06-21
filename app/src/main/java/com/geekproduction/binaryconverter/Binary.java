@@ -64,7 +64,8 @@ public class Binary extends AppCompatActivity {
             try (FileOutputStream output = new FileOutputStream(file)) {
                 if (binaryText.getText().equals("")) {
                     output.write("".getBytes());
-                } else {
+                }
+                else {
                     output.write(binaryText.getText().toString().getBytes());
                 }
             }

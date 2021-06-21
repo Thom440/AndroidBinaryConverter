@@ -183,7 +183,7 @@ public class Hex extends AppCompatActivity {
         else {
             decimalText.setText("");
             octalText.setText("");
-            hexText.setText("");
+            binaryText.setText("");
         }
     }
 

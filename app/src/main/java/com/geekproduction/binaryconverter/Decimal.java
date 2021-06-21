@@ -158,7 +158,7 @@ public class Decimal extends AppCompatActivity {
         else if (((Button)v).getText().equals("")) {
             if (!(decimalText.getText().equals(""))) {
                 decimalTextValue = decimalTextValue.substring(0, decimalTextValue.length() - 1);
-                if (decimalTextValue.indexOf(".") == decimalTextValue.length() - 1) {
+                if (decimalTextValue.indexOf(".") == decimalTextValue.length() - 1 && decimalTextValue.indexOf(".") > -1) {
                     decimalText.setText(decimalTextValue);
                     return;
                 }
@@ -170,7 +170,9 @@ public class Decimal extends AppCompatActivity {
         decimalText.setText(decimalTextValue);
         // Checking to see if the input is a valid Big Decimal
         if (Validator.validBigDecimal(decimalTextValue)) {
-            BigDecimal bigDecimal = new BigDecimal(decimalTextValue);
+            BigInteger integerPart = getBigInteger(decimalTextValue.substring(0, decimalTextValue.indexOf(".")));
+            String fractionPart = decimalTextValue.substring(decimalTextValue.indexOf("."));
+            BigDecimal bigDecimal = new BigDecimal(integerPart + fractionPart);
             new DoDecimalPointConversions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bigDecimal);
         }
         // Checking to see if the input is a valid big integer
